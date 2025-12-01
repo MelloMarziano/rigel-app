@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747258352161",
+    "project_id": "rigel-9d30c",
+    "storage_bucket": "rigel-9d30c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747258352161:android:783a108dd559ecd0ad4960",
+        "android_client_info": {
+          "package_name": "com.example.rigel_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXQqwq50SACfur0oLC-Gt4AYvNjBJuJlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
