@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:flutter/services.dart';
 
 import 'inventario_controller.dart';
 import '../../routes/app_routes.dart';
@@ -31,9 +32,9 @@ class InventarioScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Categoría: ${controller.categoriaId}'),
-              const SizedBox(height: 8),
-              Text('Inventario: ${controller.inventarioId ?? '-'}'),
+              // Text('Categoría: ${controller.categoriaId}'),
+              // const SizedBox(height: 8),
+              // Text('Inventario: ${controller.inventarioId ?? '-'}'),
               const SizedBox(height: 16),
               TextField(
                 onChanged: controller.setSearch,
@@ -101,6 +102,7 @@ class InventarioScreen extends StatelessWidget {
                             child: GestureDetector(
                               onTap: () async {
                                 final controllerText = TextEditingController();
+                                final amountText = ''.obs;
                                 final value = await showGeneralDialog<double>(
                                   context: context,
                                   barrierLabel: 'Cantidad',
@@ -145,7 +147,17 @@ class InventarioScreen extends StatelessWidget {
                                               TextField(
                                                 controller: controllerText,
                                                 keyboardType:
-                                                    TextInputType.number,
+                                                    const TextInputType.numberWithOptions(
+                                                      decimal: true,
+                                                    ),
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter.allow(
+                                                    RegExp(r'[0-9.,]'),
+                                                  ),
+                                                ],
+                                                onChanged: (v) {
+                                                  amountText.value = v;
+                                                },
                                                 decoration: InputDecoration(
                                                   hintText: '0',
                                                   border: OutlineInputBorder(
@@ -157,24 +169,23 @@ class InventarioScreen extends StatelessWidget {
                                                 ),
                                               ),
                                               const SizedBox(height: 12),
-                                              Builder(
-                                                builder: (ctx3) {
-                                                  final total =
-                                                      (double.tryParse(
-                                                            controllerText.text,
-                                                          ) ??
-                                                          0) *
-                                                      p.costoUnitario;
-                                                  return Text(
-                                                    'Equivale a: \$${total.toStringAsFixed(2)}',
-                                                    textAlign: TextAlign.center,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
+                                              Obx(() {
+                                                final val =
+                                                    double.tryParse(
+                                                      amountText.value
+                                                          .replaceAll(',', '.'),
+                                                    ) ??
+                                                    0;
+                                                final total =
+                                                    val * p.costoUnitario;
+                                                return Text(
+                                                  'Equivale a: \$${total.toStringAsFixed(2)}',
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                );
+                                              }),
                                               const SizedBox(height: 12),
                                               Row(
                                                 children: [
@@ -213,7 +224,11 @@ class InventarioScreen extends StatelessWidget {
                                                         final parsed =
                                                             double.tryParse(
                                                               controllerText
-                                                                  .text,
+                                                                  .text
+                                                                  .replaceAll(
+                                                                    ',',
+                                                                    '.',
+                                                                  ),
                                                             );
                                                         Navigator.of(ctx).pop(
                                                           parsed ?? p.cantidad,
@@ -356,8 +371,16 @@ class InventarioScreen extends StatelessWidget {
                                                             controller:
                                                                 controllerText,
                                                             keyboardType:
-                                                                TextInputType
-                                                                    .number,
+                                                                const TextInputType.numberWithOptions(
+                                                                  decimal: true,
+                                                                ),
+                                                            inputFormatters: [
+                                                              FilteringTextInputFormatter.allow(
+                                                                RegExp(
+                                                                  r'[0-9.,]',
+                                                                ),
+                                                              ),
+                                                            ],
                                                             decoration: InputDecoration(
                                                               hintText: '0',
                                                               border: OutlineInputBorder(
@@ -409,11 +432,14 @@ class InventarioScreen extends StatelessWidget {
                                                               Expanded(
                                                                 child: GestureDetector(
                                                                   onTap: () {
-                                                                    final parsed =
-                                                                        double.tryParse(
-                                                                          controllerText
-                                                                              .text,
-                                                                        );
+                                                                    final parsed = double.tryParse(
+                                                                      controllerText
+                                                                          .text
+                                                                          .replaceAll(
+                                                                            ',',
+                                                                            '.',
+                                                                          ),
+                                                                    );
                                                                     Navigator.of(
                                                                       ctx,
                                                                     ).pop(
@@ -473,7 +499,7 @@ class InventarioScreen extends StatelessWidget {
                                                   BorderRadius.circular(12),
                                             ),
                                             child: Text(
-                                              p.cantidad.toStringAsFixed(0),
+                                              p.cantidad.toStringAsFixed(2),
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w700,
                                               ),
