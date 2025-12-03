@@ -45,9 +45,12 @@ class LoginController extends GetxController {
         Get.snackbar('Error', 'Credenciales inválidas');
         return;
       }
-      final userOut = Map<String, dynamic>.from(data);
-      userOut['id'] = doc.id;
-      userOut.remove('password');
+      final userOut = <String, dynamic>{
+        'id': doc.id,
+        'email': (data['email'] as String?) ?? '',
+        'nombre': (data['nombre'] as String?) ?? '',
+        'rol': (data['rol'] as String?) ?? '',
+      };
       final box = GetStorage();
       await box.write('user', userOut);
       Get.offAllNamed(AppRoutes.HOME);
